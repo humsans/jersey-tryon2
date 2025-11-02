@@ -1,0 +1,5 @@
+{
+  "name": "Premier League Jersey Virtual Try-On",
+  "description": "An application that allows users to virtually try on football jerseys from Premier League teams. Users can upload a photo, select a team and jersey, and the Gemini API will generate an image of them wearing the selected outfit.",
+  "requestFramePermissions": []
+}
