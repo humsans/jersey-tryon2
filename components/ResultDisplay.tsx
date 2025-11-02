@@ -1,11 +1,14 @@
-
 import React from 'react';
+import { Team, JerseyType } from '../types';
 
 interface ResultDisplayProps {
   originalImage: string | null;
   generatedImage: string | null;
   isLoading: boolean;
   error: string | null;
+  selectedTeam: Team | null;
+  selectedJersey: JerseyType;
+  originalImageFile: File | null;
 }
 
 const ImagePanel: React.FC<{ src: string | null, title: string, isLoading?: boolean }> = ({ src, title, isLoading = false }) => {
@@ -29,7 +32,24 @@ const ImagePanel: React.FC<{ src: string | null, title: string, isLoading?: bool
   );
 };
 
-export const ResultDisplay: React.FC<ResultDisplayProps> = ({ originalImage, generatedImage, isLoading, error }) => {
+export const ResultDisplay: React.FC<ResultDisplayProps> = ({ originalImage, generatedImage, isLoading, error, selectedTeam, selectedJersey, originalImageFile }) => {
+    
+    const handleDownload = () => {
+        if (!generatedImage || !selectedTeam || !originalImageFile) return;
+
+        const originalFileName = originalImageFile.name;
+        const baseFileName = originalFileName.slice(0, originalFileName.lastIndexOf('.'));
+        
+        const newFileName = `${selectedTeam.name}_${selectedJersey}_${baseFileName}.png`;
+        
+        const link = document.createElement('a');
+        link.href = generatedImage;
+        link.download = newFileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     if (!originalImage && !isLoading && !error) {
         return (
             <div className="flex flex-col items-center justify-center h-full min-h-[50vh] bg-gray-800/50 rounded-2xl p-8 text-center border-2 border-dashed border-gray-700">
@@ -59,7 +79,20 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({ originalImage, gen
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <ImagePanel src={originalImage} title="Original" />
-      <ImagePanel src={generatedImage} title="Try-On Result" isLoading={isLoading} />
+      <div>
+        <ImagePanel src={generatedImage} title="Try-On Result" isLoading={isLoading} />
+        {generatedImage && !isLoading && (
+            <button
+                onClick={handleDownload}
+                className="mt-4 w-full text-md font-bold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-500/20 transform hover:scale-105"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download Result
+            </button>
+        )}
+      </div>
     </div>
   );
 };

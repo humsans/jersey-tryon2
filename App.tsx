@@ -125,6 +125,9 @@ const App: React.FC = () => {
               generatedImage={generatedImage}
               isLoading={isLoading}
               error={error}
+              selectedTeam={selectedTeam}
+              selectedJersey={selectedJersey}
+              originalImageFile={originalImageFile}
             />
           </div>
         </div>
